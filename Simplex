@@ -1,45 +1,44 @@
 clc
 clear all
 
-C = [40 30]
-A= [1 1;2 1]
-m = size(A,1)
-A = [A eye(m)]
-b = [12;16]
-C = [C zeros(1,m)]
-n = size(A, 2)
-y = zeros(n,1)
-Y = [A b]
-bv_index = n-m+1:n
-
-for k = 1:5
-    Cb = C(bv_index)
-    Xb = Y(:,end)
-    ZjCj = Cb*Y(:,1:n)-C
-    if ZjCj>=0
-        disp('Optimum value achieved')
+C = [40 30];
+A = [1 1; 2 1];
+m = size(A,1);
+A = [A eye(m)];
+b = [12;16];
+C = [C zeros(1,m)];
+n = size(A,2);
+y = zeros(n,1);
+Y = [A b];
+bv_index = n-m+1 : n;
+for k = 1:1000
+    Cb = C(bv_index);
+    Xb = Y(:,end);
+    ZjCj = Cb * Y(:,1:n) - C;
+    if ZjCj >=0
+        disp('Optimum value achieved');
         y(bv_index) = Xb;
-        Z = C*y
+        z = C * y;
         y
-        Z
-        break
+        z
+        break;
     else
-        [value,ev] = min(ZjCj)
+        [value,ev] = min(ZjCj);
         for i = 1:m
-            if Y (i,ev)>0
-                ratio(i)=Xb(i)/Y(i,ev);
+            if Y(i,ev) > 0
+                ratio(i) = Xb(i) / Y(i,ev);
             else
-                ratio(i) = inf
+                ratio(i) = inf;
             end
         end
-        [value,lv]=min(ratio)
+        [value,lv] = min(ratio);
         bv_index(lv) = ev;
     end
     pivot = Y(lv,ev);
     Y(lv,:) = Y(lv,:)/pivot;
     for i = 1:m
-        if i~=lv
-            Y(i,:) = Y(i,:)-Y(i,ev) * Y(lv,:)
+        if i~= lv
+            Y(i,:) = Y(i,:) - Y(i,ev)*Y(lv,:);
         end
     end
 end
