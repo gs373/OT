@@ -1,0 +1,14 @@
+f = @(x) (x(1)^2 + x(2)^2 - x(1)*x(2));
+X0 = [1 0.5];
+toll = 0.05;
+grad = @(x)[2*x(1) - x(2), 2*x(2)-x(1)];
+lambda = 0.5;
+
+grad_f = -grad(X0);
+while norm(grad(X0),inf)>toll
+    X1 = X0 + lambda*(grad_f);
+    X0 = X1;
+    grad_f = -grad(X0);
+end
+minPoint = X0
+minValue = f(minPoint)
