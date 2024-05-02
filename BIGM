@@ -1,0 +1,51 @@
+clc
+clear all
+M = 10^6;
+C = [2 8 0 0 M M];
+A = [5, 10, 0, 0, 1, 0; 1, 0, 1, 0, 0, 0; 0, 1, 0, -1, 0, 1];
+m = size(A, 1);
+b = [150;20;14];
+n = size(A, 2);
+Y = [A b];
+y = zeros(n, 1);
+
+ratio = [];
+bv_index = [5, 3, 6];
+artifical_variable_index=[5, 6];
+for k=1:1000
+    Cb = C(bv_index);
+    Xb = Y(:, n+1);
+    zjcj = Cb*Y(:, 1:n)-C;
+    if zjcj<=0
+        y = zeros(n, 1);
+        y(bv_index)=Xb
+        z = C*y                
+    else
+        [value, ev] = min(zjcj);
+        if Y(:, ev)<0
+            disp('solution unbound')
+            break
+        end
+        for i=1:m
+            if Y(i, ev)>0
+                ratio(i)=Xb(i)/Y(i, ev);
+            else
+                ratio(i)=inf;
+            end
+        end
+        [value, lv] = min(ratio);
+        bv_index(lv)=ev;
+    end
+    pivot=Y(lv, ev);
+    Y(lv,:) = Y(lv, :)/pivot;
+    for i=1:m
+        if i~=lv
+            Y(i, :) = Y(i, :) - Y(i, ev)*Y(lv, :);
+        end
+    end
+end
+if y(bv_index)>0 & any(bv_index)==all(artifical_variable_index)
+            disp('infeasible solution')
+        else
+            disp('Solution Found')
+end
