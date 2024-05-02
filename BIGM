@@ -21,7 +21,7 @@ for k=1:1000
         y(bv_index)=Xb
         z = C*y                
     else
-        [value, ev] = min(zjcj);
+        [value, ev] = max(zjcj);
         if Y(:, ev)<0
             disp('solution unbound')
             break
